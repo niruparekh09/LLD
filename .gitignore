@@ -23,14 +23,17 @@
 hs_err_pid*
 replay_pid*
 
-# IntelliJ specific files
+### IntelliJ IDEA ###
 .idea/
-*.iml
 *.iws
+*.iml
+*.ipr
+out/
+gen/
 
-.history/
-
-# OS specific files
+### OS files ###
 .DS_Store
 Thumbs.db
-/.idea/
+
+### Local History ###
+.history/
