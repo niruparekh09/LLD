@@ -83,12 +83,27 @@ public class OrderServiceCallable {
         Future<String> etaResult =
                 executorService.submit(etaTask);
 
+        // Create FutureTask object for ETA calculation task (since it returns a result) | Another way
+        /**
+         * FutureTask combines two roles:
+         * FutureTask<T>
+         *      ├── Runnable
+         *      └── Future<T>
+         *
+         * So it is both:
+         * something a thread can execute
+         * and something from which you can retrieve the result
+         */
+        FutureTask<String> etaTask2 = new FutureTask<>(new CalculateETATask2());
+        executorService.submit(etaTask2);
+
         // Submit the SMS and Email tasks (no result required)
         executorService.submit(smsTask);
         executorService.submit(emailTask);
 
         try {
             System.out.println(etaResult.get());
+            System.out.println(etaTask2.get());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
