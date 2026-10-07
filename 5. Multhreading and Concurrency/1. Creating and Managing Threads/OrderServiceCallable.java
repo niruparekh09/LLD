@@ -92,5 +92,8 @@ public class OrderServiceCallable {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+        // Shutdown the ExecutorService
+        executorService.shutdown();
     }
 }
