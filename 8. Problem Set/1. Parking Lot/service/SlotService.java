@@ -5,6 +5,7 @@ import domain.Vehicle;
 import repository.SlotRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class SlotService {
     private SlotRepository slotRepository;
@@ -26,5 +27,13 @@ public class SlotService {
         }
 
         return parkingSlot;
+    }
+
+    public void releaseSlot(UUID slotId) {
+        System.out.println("{SERVICE} Releasing the slot: " + slotId);
+
+        slotRepository.releaseSlot(slotId);
+
+        System.out.println("{SERVICE} Slot Successfully released: " + slotId);
     }
 }

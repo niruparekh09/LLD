@@ -22,7 +22,7 @@ public class Receipt {
         this.status = PaymentStatus.PENDING;
     }
 
-    public void markPaid(){
+    public void markAsPaid(){
         this.status = PaymentStatus.SUCCESS;
     }
 
@@ -46,7 +46,7 @@ public class Receipt {
         return totalFee;
     }
 
-    public PaymentStatus getStatus() {
+    public PaymentStatus getPaymentStatus() {
         return status;
     }
 

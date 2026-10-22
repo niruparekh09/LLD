@@ -4,6 +4,7 @@ import domain.Ticket;
 import domain.Vehicle;
 import repository.TicketRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class TicketService {
@@ -23,5 +24,15 @@ public class TicketService {
         System.out.println("{SERVICE} Ticket generated successfully: " + ticket.getId());
 
         return ticket;
+    }
+
+    public Optional<Ticket> getTicket(UUID ticketId) {
+        System.out.println("{SERVICE} Finding ticket: " + ticketId);
+        return ticketRepository.findById(ticketId);
+    }
+
+    public void deactivateTicket(UUID ticketId) {
+        System.out.println("{SERVICE} Expiring Ticket: "+ticketId);
+        ticketRepository.deactivateTicket(ticketId);
     }
 }

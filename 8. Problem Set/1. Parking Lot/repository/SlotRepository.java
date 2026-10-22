@@ -35,4 +35,11 @@ public class SlotRepository {
                         Collectors.counting()
                 ));
     }
+
+    public void releaseSlot(UUID slotId) {
+        slots.computeIfPresent(slotId, (id, slot) -> {
+            slot.setOccupied(false);
+            return slot;
+        });
+    }
 }
