@@ -1,0 +1,10 @@
+package domain;
+
+public enum PurchaseStatus {
+    SUCCESS,
+    PRODUCT_NOT_FOUND,
+    OUT_OF_STOCK,
+    INSUFFICIENT_PAYMENT,
+    EXACT_CHANGE_UNAVAILABLE,
+    MACHINE_UNAVAILABLE
+}

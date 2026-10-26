@@ -1,11 +1,12 @@
 package domain;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class CashInventory {
+    private final Map<Denomination, Integer> notes = new EnumMap<>(
+            Denomination.class
+    );
+
     private static final Denomination[] DESCENDING_DENOMINATIONS = {
             Denomination.HUNDRED,
             Denomination.FIFTY,
@@ -14,9 +15,6 @@ public class CashInventory {
             Denomination.FIVE,
             Denomination.ONE
     };
-    private final Map<Denomination, Integer> notes = new EnumMap<>(
-            Denomination.class
-    );
 
     public CashInventory() {
         for (Denomination denomination : Denomination.values()) {
@@ -58,7 +56,7 @@ public class CashInventory {
     /**
      * Returns the exact change plan if payment can be accepted.
      * Otherwise returns Optional.empty() and leaves cash unchanged.
-     * <p>
+     *
      * Inserted notes are included when calculating available change.
      */
     public synchronized Optional<Map<Denomination, Integer>>
