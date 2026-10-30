@@ -12,7 +12,7 @@ public class PurchaseResult {
     private final Map<Denomination, Integer> change;
     private final Map<Denomination, Integer> refund;
 
-    private PurchaseResult(
+    public PurchaseResult(
             boolean successful,
             String message,
             Product product,

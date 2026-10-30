@@ -1,11 +1,12 @@
+
 package domain;
 
 import java.util.*;
 
 public class CashInventory {
-    private final Map<Denomination, Integer> notes = new EnumMap<>(
-            Denomination.class
-    );
+
+    private final Map<Denomination, Integer> notes =
+            new EnumMap<>(Denomination.class);
 
     private static final Denomination[] DESCENDING_DENOMINATIONS = {
             Denomination.HUNDRED,
@@ -54,13 +55,12 @@ public class CashInventory {
     }
 
     /**
-     * Returns the exact change plan if payment can be accepted.
-     * Otherwise returns Optional.empty() and leaves cash unchanged.
+     * Calculates exact change without modifying the actual cash inventory.
      *
-     * Inserted notes are included when calculating available change.
+     * Customer's inserted notes are included when calculating available
+     * change.
      */
-    public synchronized Optional<Map<Denomination, Integer>>
-    acceptPaymentAndMakeChange(
+    public synchronized Optional<Map<Denomination, Integer>> calculateChange(
             Map<Denomination, Integer> insertedNotes,
             int changeAmount
     ) {
@@ -72,9 +72,10 @@ public class CashInventory {
             );
         }
 
+        // Create a temporary copy of the current cash inventory.
         Map<Denomination, Integer> working = new EnumMap<>(notes);
 
-        // Simulate accepting the customer's notes.
+        // Simulate accepting customer's notes.
         for (var entry : insertedNotes.entrySet()) {
             Denomination denomination = entry.getKey();
             int count = entry.getValue();
@@ -85,6 +86,7 @@ public class CashInventory {
             );
         }
 
+        // Find exact change using the temporary inventory.
         Map<Denomination, Integer> changePlan =
                 findChange(changeAmount, working);
 
@@ -92,19 +94,58 @@ public class CashInventory {
             return Optional.empty();
         }
 
-        // Commit only after a complete change plan has been found.
-        for (var entry : changePlan.entrySet()) {
+        return Optional.of(Map.copyOf(changePlan));
+    }
+
+    /**
+     * Commits the customer's payment and the previously calculated change.
+     *
+     * Actual cash inventory is updated only after all validations and
+     * calculations succeed.
+     */
+    public synchronized void commitPaymentAndChange(
+            Map<Denomination, Integer> insertedNotes,
+            Map<Denomination, Integer> changePlan
+    ) {
+        validateNotes(insertedNotes);
+        validateNotes(changePlan);
+
+        // Work on a temporary copy to avoid partial updates.
+        Map<Denomination, Integer> updated = new EnumMap<>(notes);
+
+        // Add customer's inserted notes.
+        for (var entry : insertedNotes.entrySet()) {
             Denomination denomination = entry.getKey();
-            working.put(
+
+            updated.put(
                     denomination,
-                    working.get(denomination) - entry.getValue()
+                    Math.addExact(
+                            updated.get(denomination),
+                            entry.getValue()
+                    )
             );
         }
 
-        notes.clear();
-        notes.putAll(working);
+        // Deduct the planned change.
+        for (var entry : changePlan.entrySet()) {
+            Denomination denomination = entry.getKey();
+            int count = entry.getValue();
 
-        return Optional.of(Map.copyOf(changePlan));
+            if (updated.get(denomination) < count) {
+                throw new IllegalStateException(
+                        "Insufficient notes for change"
+                );
+            }
+
+            updated.put(
+                    denomination,
+                    updated.get(denomination) - count
+            );
+        }
+
+        // Commit the updated inventory.
+        notes.clear();
+        notes.putAll(updated);
     }
 
     /**
@@ -112,9 +153,11 @@ public class CashInventory {
      */
     public synchronized Map<Denomination, Integer> collectCash() {
         Map<Denomination, Integer> collected = new EnumMap<>(notes);
+
         for (Denomination denomination : Denomination.values()) {
             notes.put(denomination, 0);
         }
+
         return Map.copyOf(collected);
     }
 
@@ -126,9 +169,8 @@ public class CashInventory {
             return null;
         }
 
-        Map<Denomination, Integer> result = new EnumMap<>(
-                Denomination.class
-        );
+        Map<Denomination, Integer> result =
+                new EnumMap<>(Denomination.class);
 
         return findChangeRecursive(
                 0, amount, availableNotes, result
@@ -152,11 +194,13 @@ public class CashInventory {
         Denomination denomination = DESCENDING_DENOMINATIONS[index];
         int value = denomination.getValue();
         int available = availableNotes.get(denomination);
+
         int maxToUse = Math.min(available, remaining / value);
 
-        // Try using the largest possible number of this denomination,
-        // then backtrack if it prevents an exact solution.
+        // Try larger denominations first.
+        // Backtrack if an exact solution cannot be found.
         for (int count = maxToUse; count >= 0; count--) {
+
             if (count > 0) {
                 result.put(denomination, count);
             } else {
@@ -177,14 +221,17 @@ public class CashInventory {
         return false;
     }
 
-    private void validateNotes(Map<Denomination, Integer> insertedNotes) {
-        Objects.requireNonNull(insertedNotes, "Inserted notes are required");
+    private void validateNotes(
+            Map<Denomination, Integer> notesMap
+    ) {
+        Objects.requireNonNull(notesMap, "Notes are required");
 
-        for (var entry : insertedNotes.entrySet()) {
+        for (var entry : notesMap.entrySet()) {
             if (entry.getKey() == null ||
                     entry.getValue() == null ||
                     entry.getValue() < 0) {
-                throw new IllegalArgumentException("Invalid inserted notes");
+
+                throw new IllegalArgumentException("Invalid notes");
             }
         }
     }

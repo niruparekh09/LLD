@@ -8,87 +8,139 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AdminVendingMachineController {
-    VendingMachineService vendingMachineService;
+
+    private final VendingMachineService vendingMachineService;
 
     public AdminVendingMachineController(VendingMachineService vendingMachineService) {
-        System.out.println("{CONTROLLER} Vending Machine Admin Controller Init");
         this.vendingMachineService = vendingMachineService;
+        System.out.println("{ADMIN CONTROLLER} Initialized");
     }
 
     public String addProduct(Product product, int quantity) {
+        System.out.println("{ADMIN CONTROLLER} Request: Add product | "
+                + product.getName() + " | Quantity: " + quantity);
+
         try {
-            System.out.println("{CONTROLLER} Admin adding product: " + product + ", with quantity: " + quantity);
             vendingMachineService.addProduct(product, quantity);
+
+            System.out.println("{ADMIN CONTROLLER} Response: Product added successfully");
+
             return "Product added successfully";
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error adding product: " + e.getMessage());
+            System.out.println("{ADMIN CONTROLLER} Request failed: Add product | "
+                    + e.getMessage());
+
             return "Cannot add product due to error: " + e.getMessage();
         }
     }
 
     public String removeProduct(UUID productId) {
+        System.out.println("{ADMIN CONTROLLER} Request: Remove product | ID: " + productId);
+
         try {
-            System.out.println("{CONTROLLER} Admin remove the product: " + productId);
             vendingMachineService.removeProduct(productId);
+
+            System.out.println("{ADMIN CONTROLLER} Response: Product removed successfully");
+
             return "Product removed successfully";
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error removing product: " + e.getMessage());
+            System.out.println("{ADMIN CONTROLLER} Request failed: Remove product | "
+                    + e.getMessage());
+
             return "Cannot remove product due to error: " + e.getMessage();
         }
     }
 
     public String updatePrice(UUID productId, int newPrice) {
+        System.out.println("{ADMIN CONTROLLER} Request: Update product price | "
+                + "Product: " + productId + " | New price: " + newPrice);
+
         try {
-            System.out.println("{CONTROLLER} Updating product: " + productId + ", to: " + newPrice);
             vendingMachineService.updatePrice(productId, newPrice);
-            return "Product price updated";
+
+            System.out.println("{ADMIN CONTROLLER} Response: Product price updated");
+
+            return "Product price updated successfully";
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error updating product price: " + e.getMessage());
+            System.out.println("{ADMIN CONTROLLER} Request failed: Update price | "
+                    + e.getMessage());
+
             return "Cannot update product price due to error: " + e.getMessage();
         }
     }
 
     public String restock(UUID productId, int quantity) {
+        System.out.println("{ADMIN CONTROLLER} Request: Restock product | "
+                + "Product: " + productId + " | Quantity: " + quantity);
+
         try {
-            System.out.println("{CONTROLLER} Restocking the product: " + productId);
             vendingMachineService.restock(productId, quantity);
-            return "Product restock successfully";
+
+            System.out.println("{ADMIN CONTROLLER} Response: Product restocked successfully");
+
+            return "Product restocked successfully";
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error restocking product: " + e.getMessage());
+            System.out.println("{ADMIN CONTROLLER} Request failed: Restock product | "
+                    + e.getMessage());
+
             return "Cannot restock the product due to error: " + e.getMessage();
         }
     }
 
-    public Object collectCash() {
+    public Map<Denomination, Integer> collectCash() {
+        System.out.println("{ADMIN CONTROLLER} Request: Collect machine cash");
+
         try {
-            System.out.println("{CONTROLLER} Collecting cash from vending machine");
             Map<Denomination, Integer> response = vendingMachineService.collectCash();
-            System.out.println("{CONTROLLER} Cash collected successfully. Total Cash: " + response);
+
+            System.out.println("{ADMIN CONTROLLER} Response: Cash collected | " + response);
+
             return response;
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error collecting cash: " + e.getMessage());
-            return "Cannot collect cash due to error: " + e.getMessage();
+            System.out.println("{ADMIN CONTROLLER} Request failed: Collect cash | "
+                    + e.getMessage());
+
+            throw e;
         }
     }
 
     public String takeOutOfService() {
+        System.out.println("{ADMIN CONTROLLER} Request: Take machine out of service");
+
         try {
-            System.out.println("{CONTROLLER} Taking Machine Out Of Service");
             vendingMachineService.takeOutOfService();
+
+            System.out.println("{ADMIN CONTROLLER} Response: Machine taken out of service");
+
             return "Vending Machine is now Out Of Service";
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error taking machine out of service: " + e.getMessage());
+            System.out.println("{ADMIN CONTROLLER} Request failed: Take machine out of service | "
+                    + e.getMessage());
+
             return "Cannot take the machine out of service due to error: " + e.getMessage();
         }
     }
 
     public String returnToService() {
+        System.out.println("{ADMIN CONTROLLER} Request: Return machine to service");
+
         try {
-            System.out.println("{CONTROLLER} Returning Machine to Service");
             vendingMachineService.returnToService();
+
+            System.out.println("{ADMIN CONTROLLER} Response: Machine returned to service");
+
             return "Vending Machine is now operating";
+
         } catch (Exception e) {
-            System.out.println("{CONTROLLER} Error returning machine to service: " + e.getMessage());
+            System.out.println("{ADMIN CONTROLLER} Request failed: Return machine to service | "
+                    + e.getMessage());
+
             return "Cannot return the machine to service due to error: " + e.getMessage();
         }
     }

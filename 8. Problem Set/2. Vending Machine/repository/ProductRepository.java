@@ -13,40 +13,61 @@ public class ProductRepository {
     public void save(Product product) {
         Objects.requireNonNull(product, "Product cannot be null");
 
+        System.out.println("{PRODUCT REPOSITORY} Saving product | "
+                + product.getName() + " | ID: " + product.getId());
+
         products.put(product.getId(), product);
+
+        System.out.println("{PRODUCT REPOSITORY} Product saved successfully | "
+                + product.getId());
     }
 
     // Find a product by ID
     public Optional<Product> findById(UUID id) {
-        Objects.requireNonNull(id, "ID cannot be null");
+        Objects.requireNonNull(id, "Product ID cannot be null");
 
-        return products.values()
-                .stream()
-                .filter(product -> product.getId().equals(id))
-                .findFirst();
+        Product product = products.get(id);
+
+        System.out.println("{PRODUCT REPOSITORY} Find product by ID | "
+                + id + " | Found: " + (product != null));
+
+        return Optional.ofNullable(product);
     }
 
     // Find a product by name
     public Optional<Product> findByName(String name) {
-        Objects.requireNonNull(name, "Name cannot be null");
+        Objects.requireNonNull(name, "Product name cannot be null");
 
-        return products.values()
+        Optional<Product> result = products.values()
                 .stream()
                 .filter(product -> product.getName().equals(name))
                 .findFirst();
+
+        System.out.println("{PRODUCT REPOSITORY} Find product by name | "
+                + name + " | Found: " + result.isPresent());
+
+        return result;
     }
 
     // Find all products
     public List<Product> findAll() {
-        return products.values()
+        List<Product> result = products.values()
                 .stream()
                 .toList();
+
+        System.out.println("{PRODUCT REPOSITORY} Fetch all products | Count: "
+                + result.size());
+
+        return result;
     }
 
     // Delete a product
     public void delete(UUID id) {
-        Objects.requireNonNull(id, "ID cannot be null");
+        Objects.requireNonNull(id, "Product ID cannot be null");
 
-        products.remove(id);
+        Product removed = products.remove(id);
+
+        System.out.println("{PRODUCT REPOSITORY} Delete product | "
+                + id + " | Deleted: " + (removed != null));
     }
 }

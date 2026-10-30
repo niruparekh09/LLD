@@ -6,30 +6,51 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class InventoryRepository {
-    Map<UUID, Inventory> inventories = new ConcurrentHashMap<>();
+
+    private final Map<UUID, Inventory> inventories = new ConcurrentHashMap<>();
 
     public void save(Inventory inventory) {
         Objects.requireNonNull(inventory, "Inventory cannot be null");
 
-        inventories.put(inventory.getProductId(), inventory);
+        UUID productId = inventory.getProductId();
+
+        System.out.println("{INVENTORY REPOSITORY} Saving inventory | Product: "
+                + productId);
+
+        inventories.put(productId, inventory);
+
+        System.out.println("{INVENTORY REPOSITORY} Inventory saved successfully | "
+                + "Product: " + productId + " | Quantity: " + inventory.getQuantity());
     }
 
-    public Optional<Inventory> findByProductId(UUID id) {
-        Objects.requireNonNull(id, "Product ID cannot be null");
+    public Optional<Inventory> findByProductId(UUID productId) {
+        Objects.requireNonNull(productId, "Product ID cannot be null");
 
-        return inventories.values()
-                .stream()
-                .filter(inventory -> inventory.getProductId().equals(id))
-                .findFirst();
+        Inventory inventory = inventories.get(productId);
+
+        System.out.println("{INVENTORY REPOSITORY} Find inventory | Product: "
+                + productId + " | Found: " + (inventory != null));
+
+        return Optional.ofNullable(inventory);
     }
 
     public List<Inventory> findAll() {
-        return inventories.values().stream().toList();
+        List<Inventory> result = inventories.values()
+                .stream()
+                .toList();
+
+        System.out.println("{INVENTORY REPOSITORY} Fetch all inventories | Count: "
+                + result.size());
+
+        return result;
     }
 
-    public void delete(UUID id) {
-        Objects.requireNonNull(id, "ID cannot be null");
+    public void delete(UUID productId) {
+        Objects.requireNonNull(productId, "Product ID cannot be null");
 
-        inventories.remove(id);
+        Inventory removed = inventories.remove(productId);
+
+        System.out.println("{INVENTORY REPOSITORY} Delete inventory | Product: "
+                + productId + " | Deleted: " + (removed != null));
     }
 }

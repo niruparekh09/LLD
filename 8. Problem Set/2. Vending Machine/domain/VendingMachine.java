@@ -1,8 +1,6 @@
 package domain;
 
-import domain.dto.PurchaseResult;
-
-import java.util.*;
+import java.util.UUID;
 
 public class VendingMachine {
     private final UUID id;
@@ -53,13 +51,10 @@ public class VendingMachine {
 
     private void transitionTo(MachineState nextState) {
         boolean valid = switch (state) {
-            case IDLE ->
-                    nextState == MachineState.ACCEPTING_PAYMENT;
-            case ACCEPTING_PAYMENT ->
-                    nextState == MachineState.DISPENSING
-                            || nextState == MachineState.IDLE;
-            case DISPENSING ->
-                    nextState == MachineState.IDLE;
+            case IDLE -> nextState == MachineState.ACCEPTING_PAYMENT;
+            case ACCEPTING_PAYMENT -> nextState == MachineState.DISPENSING
+                    || nextState == MachineState.IDLE;
+            case DISPENSING -> nextState == MachineState.IDLE;
             case OUT_OF_SERVICE -> false;
         };
 
@@ -70,5 +65,16 @@ public class VendingMachine {
         }
 
         state = nextState;
+    }
+
+    public void cancelTransaction() {
+        if (state != MachineState.ACCEPTING_PAYMENT &&
+                state != MachineState.DISPENSING) {
+            throw new IllegalStateException(
+                    "Cannot cancel transaction in state: " + state
+            );
+        }
+
+        state = MachineState.IDLE;
     }
 }
