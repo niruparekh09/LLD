@@ -2,34 +2,33 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Task {
-    private UUID id;
+    private final UUID id;
+    private final LocalDateTime createdAt;
+    private final User createdBy;
     private String title;
     private String description;
     private TaskPriority priority;
     private TaskStatus status;
-    private LocalDateTime createdAt;
     private LocalDate dueDate;
     private User assignee;
-    private User createdBy;
-    private List<Comment> comments;
 
     public Task(String title, String description, TaskPriority priority, LocalDate dueDate, User assignee, User createdBy) {
         this.id = UUID.randomUUID();
+
+        validateTitle(title);
         this.title = title;
-        this.description = description;
-        this.priority = priority;
+
+        this.description = Objects.requireNonNull(description, "Description cannot be null");
+        this.priority = Objects.requireNonNull(priority, "Priority cannot be null");
         this.status = TaskStatus.TODO; // Initial status will be TODO
         this.createdAt = LocalDateTime.now();
         this.dueDate = dueDate;
         this.assignee = assignee;
-        this.createdBy = createdBy;
-        this.comments = new ArrayList<>(); // Initially comments will be empty
+        this.createdBy = Objects.requireNonNull(createdBy, "Created By cannot be null");
     }
 
     // Getters and Setters
@@ -69,35 +68,34 @@ public class Task {
         return createdBy;
     }
 
-    public List<Comment> getComments() {
-        return Collections.unmodifiableList(comments);
-    }
-
     public void changeTitle(String title) {
+        validateTitle(title);
         this.title = title;
     }
 
     public void changeDescription(String description) {
-        this.description = description;
+        this.description = Objects.requireNonNull(description, "Description cannot be null");
     }
 
     public void changePriority(TaskPriority priority) {
-        this.priority = priority;
+        this.priority = Objects.requireNonNull(priority, "priority cannot be null");
     }
 
     public void changeStatus(TaskStatus status) {
-        this.status = status;
+        this.status = Objects.requireNonNull(status, "Status cannot be null");
     }
 
     public void changeDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
+        this.dueDate = dueDate; // Due Date can be null because user can remove the date
     }
 
     public void changeAssignee(User assignee) {
-        this.assignee = assignee;
+        this.assignee = assignee; // Assignee can be null because it can be removed
     }
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
+    private void validateTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Title cannot be blank");
+        }
     }
 }

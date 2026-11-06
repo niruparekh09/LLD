@@ -5,11 +5,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Comment {
-    private UUID id;
+    private final UUID id;
+    private final LocalDateTime createdAt;
+    private final User author;
+    private final UUID taskId;
     private String content;
-    private LocalDateTime createdAt;
-    private User author;
-    private UUID taskId;
 
     public Comment(String content, User author, UUID taskId) {
         this.id = UUID.randomUUID();
@@ -18,14 +18,6 @@ public class Comment {
         this.author = Objects.requireNonNull(author, "Author cannot be null");
         this.taskId = Objects.requireNonNull(taskId, "Task ID cannot be null");
     }
-
-    private String validateContent(String content) {
-        if (content == null || content.isBlank()) {
-            throw new IllegalArgumentException("Comment cannot be empty");
-        }
-        return content;
-    }
-
 
     // Getters and Setters
     public UUID getId() {
@@ -51,5 +43,12 @@ public class Comment {
     // Edit the content
     public void editContent(String content) {
         this.content = validateContent(content);
+    }
+
+    private String validateContent(String content) {
+        if (content == null || content.isBlank()) {
+            throw new IllegalArgumentException("Comment cannot be empty");
+        }
+        return content;
     }
 }

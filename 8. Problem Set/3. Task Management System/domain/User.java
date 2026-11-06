@@ -1,15 +1,16 @@
 package domain;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class User {
-    private UUID id;
+    private final UUID id;
     private String name;
 
     public User(String name) {
         this.id = UUID.randomUUID();
-        this.name = Objects.requireNonNull(name, "Name Cannot be empty or null");
+
+        validateName(name);
+        this.name = name;
     }
 
     // Getter and Setters
@@ -22,6 +23,13 @@ public class User {
     }
 
     public void changeName(String name) {
-        this.name = Objects.requireNonNull(name, "Name Cannot be empty or null");
+        validateName(name);
+        this.name = name;
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be blank");
+        }
     }
 }
