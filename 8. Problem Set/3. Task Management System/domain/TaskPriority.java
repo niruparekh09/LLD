@@ -1,5 +1,5 @@
-package domain;
+    package domain;
 
-public enum TaskPriority {
-    HIGH, MEDIUM, LOW
-}
+    public enum TaskPriority {
+        HIGH, MEDIUM, LOW
+    }
