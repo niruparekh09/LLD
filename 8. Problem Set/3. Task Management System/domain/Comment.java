@@ -7,15 +7,15 @@ import java.util.UUID;
 public class Comment {
     private final UUID id;
     private final LocalDateTime createdAt;
-    private final User author;
+    private final UUID authorId;
     private final UUID taskId;
     private String content;
 
-    public Comment(String content, User author, UUID taskId) {
+    public Comment(String content, UUID authorId, UUID taskId) {
         this.id = UUID.randomUUID();
         this.content = validateContent(content);
         this.createdAt = LocalDateTime.now();
-        this.author = Objects.requireNonNull(author, "Author cannot be null");
+        this.authorId = Objects.requireNonNull(authorId, "Author cannot be null");
         this.taskId = Objects.requireNonNull(taskId, "Task ID cannot be null");
     }
 
@@ -32,8 +32,9 @@ public class Comment {
         return createdAt;
     }
 
-    public User getAuthor() {
-        return author;
+    public UUID
+    getAuthorId() {
+        return authorId;
     }
 
     public UUID getTaskId() {

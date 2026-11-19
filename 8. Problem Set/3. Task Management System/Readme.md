@@ -19,8 +19,12 @@ should support task priorities, statuses, comments, and user assignment.
 
 ### Non-Functional Requirements:
 
-1. **Performance**: The system should support concurrent operations from multiple users with acceptable response times. 
-2. **Data Storage**: The application will use in-memory storage for this implementation. The repository layer should be designed so that persistent storage can be introduced later without changing business logic.
-3. **Concurrency**: The system should support concurrent operations while maintaining data consistency and preventing race conditions.
-4. **Reliability**: Invalid operations should be handled gracefully, and failures should not leave tasks in an inconsistent state.
-5. **Scalability**: The design should support adding new task attributes, statuses and retrieval filters without requiring major changes to existing components.
+1. **Performance**: The system should support concurrent operations from multiple users with acceptable response times.
+2. **Data Storage**: The application will use in-memory storage for this implementation. The repository layer should be
+   designed so that persistent storage can be introduced later without changing business logic.
+3. **Concurrency**: The system should support concurrent operations while maintaining data consistency and preventing
+   race conditions.
+4. **Reliability**: Invalid operations should be handled gracefully, and failures should not leave tasks in an
+   inconsistent state.
+5. **Scalability**: The design should support adding new task attributes, statuses and retrieval filters without
+   requiring major changes to existing components.

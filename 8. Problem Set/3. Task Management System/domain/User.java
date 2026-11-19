@@ -24,6 +24,10 @@ public class User {
         return active ? name : "Unknown User";
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public void changeName(String name) {
         validateName(name);
         this.name = name;
